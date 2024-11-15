@@ -15,16 +15,28 @@ export const mechanism = {
         }
     },
 
-    async returnBook (id: string) {
+    async returnBook(id: string) {
         try {
+            if (!id) {
+                throw new Error("Book ID is required");
+            }
             const book = await Book.findById(id);
-            if (!book) throw new Error("Book not found");
+            if (!book) {
+                throw new Error("Book not found");
+            }
+            if (book.qty >= book.initialQty) {
+                throw new Error("Book cannot be returned because it exceeds the initial quantity");
+            }
+    
             book.qty += 1;
+    
             await book.save();
+    
             return book;
         } catch (error) {
-            console.error(`Error returning book with id ${id}:`, error);
-            throw new Error("Could not return the specified book");
+            console.error(`Error returning book with ID ${id}:`, error);
+            throw new Error(error instanceof Error ? error.message : "Could not return the specified book");
         }
     }
 };
+    

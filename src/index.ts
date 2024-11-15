@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(router);
 
 app.get("/", (req, res) => {
+  const currentDate = new Date().toDateString(); 
   res.status(200).send({
     status: "success",
     message: "Hello World",
